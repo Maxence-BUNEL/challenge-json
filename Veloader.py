@@ -4,8 +4,7 @@ from datetime import datetime
 from geopandas import GeoDataFrame
 import geopandas as gpd
 import urllib
-from Veloader_datastruct import *  ##Entraine la declaration du schema de la table velovmaxence
-import time ##Pour mesure de temps
+from Veloader_datastruct import *  ##Entraine la declaration du schema de la table velovmaxenc
 
 
 ## Methode de remplacement des valeurs vides par -1
@@ -19,25 +18,16 @@ def replaceMissingDataByNegate1(data):
         return data
 
 
-
-start_time_global = time.time() ##TIMER
-
-
-#Parametrage SGBD et creation de la table si absente grace a la couche ORM
+##Parametrage SGBD et creation de la table si absente grace a la couche ORM
 engine = create_engine("postgresql://postgres:P@nd0s+@vps234953.ovh.net:5432/velovDB", echo=True)
 Base.metadata.create_all(engine)
-
-start_time_global = time.time() ##TIMER
-start_time_json_to_file = time.time() ##TIMER
 
 ## Recuperation fichier json et ecriture sur le disque
 geojsonfile=urllib.URLopener()
 geojsonfile.retrieve("https://download.data.grandlyon.com/wfs/rdata?SERVICE=WFS&VERSION=2.0.0&outputformat=GEOJSON&maxfeatures=400&request=GetFeature&typename=jcd_jcdecaux.jcdvelov&SRSNAME=urn:ogc:def:crs:EPSG::4171",'velov.json')
 
-interval_time_json_to_file = time.time() - start_time_json_to_file
 
 ## Lecture fichier json en memoire
-
 velovGeoDataFrame=gpd.read_file('velov.json')           ##Charge le contenu du Json dans un GeoDataFrame (herite de  et surcharge pandas.DataFrame)
 velovGeoDataFrame['dateinsert']=datetime.today()        ##Ajoute une colonne avec le timestamp actuel
 
@@ -45,14 +35,5 @@ velovGeoDataFrame['dateinsert']=datetime.today()        ##Ajoute une colonne ave
 velovGeoDataFrame.drop('geometry', axis=1, inplace=True)                    ## Suppression colonne inutile
 velovGeoDataFrame=velovGeoDataFrame.applymap(replaceMissingDataByNegate1)   ## Remplacement des valeurs vides par -1 necessaire a la methode to_sql surchargee
 
-start_time_sql = time.time() ##TIMER
-
 ##Insertion en base
 velovGeoDataFrame.to_sql(name='velovmaxence',con=engine,if_exists='append',dtype=velovTableColumnTypes)
-
-interval_time_sql = time.time() - start_time_sql
-
-interval_global = time.time() - start_time_global ##TIMER
-print ('Total time in seconds:', interval_global) ##TIMER
-print ('temps generation fichier local json:', interval_time_json_to_file) ##TIMER
-print ('temps insertion sql:', interval_time_sql) ##TIMER

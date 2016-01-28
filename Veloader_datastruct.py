@@ -17,7 +17,7 @@ class velovtable(Base):
     banking = Column (sqlalchemy.types.String(10))
     bike_stands = Column (sqlalchemy.types.SmallInteger)
     bonus = Column(sqlalchemy.types.String(20))
-    commune = Column (sqlalchemy.types.String(50),index=Tue)
+    commune = Column (sqlalchemy.types.String(50),index=True)
     gid = Column (sqlalchemy.types.SmallInteger, primary_key=True)
     last_update= Column (sqlalchemy.types.DateTime,index=True)
     last_update_fme= Column (sqlalchemy.types.DateTime,index=True)
