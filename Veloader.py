@@ -19,7 +19,7 @@ def replaceMissingDataByNegate1(data):
 
 
 ##Parametrage SGBD et creation de la table si absente grace a la couche ORM
-engine = create_engine("postgresql://postgres:P@nd0s+@vps234953.ovh.net:5432/velovDB", echo=True)
+engine = create_engine("postgresql://user:pass@dbAddress:port/dbName", echo=True)
 Base.metadata.create_all(engine)
 
 ## Recuperation fichier json et ecriture sur le disque
