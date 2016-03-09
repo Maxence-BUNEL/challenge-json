@@ -4,6 +4,7 @@ from datetime import datetime
 from geopandas import GeoDataFrame
 import geopandas as gpd
 import urllib
+import sys
 from Veloader_datastruct import *  ##Entraine la declaration du schema de la table velovmaxenc
 
 
@@ -17,9 +18,21 @@ def replaceMissingDataByNegate1(data):
     except:
         return data
 
+#Recuperation des parametres passes en ligne de commande
+try :
+    print (sys.argv)
+    sgbdEPHost = sys.argv[1] ##Host passe en parametre de ligne de commande
+    sgbdEPDbName = sys.argv[2] ##Nom base de donnee passe en parametre de ligne de commande (schema)
+    sgbdEPTable = sys.argv[3] ##Nom table cible passe en parametre de ligne de commande
+    sgbdEPUser = sys.argv[4] ##DbUser passe en parametre de ligne de commande
+    sgbdEPPassword = sys.argv[5] ##UserPassword passe en parametre de ligne de commande
+    engine = create_engine("postgresql://"+sgbdEPUser+":"+sgbdEPPassword+"@"+sgbdEPHost+"/"+sgbdEPDbName, echo=True)
+except :
+    pass
 
 ##Parametrage SGBD et creation de la table si absente grace a la couche ORM
-engine = create_engine("postgresql://postgres:P@nd0s+@vps234953.ovh.net:5432/velovDB", echo=True)
+##engine = create_engine("postgresql://user_DA:user_DA@192.168.99.100:32768/DA", echo=True)
+
 Base.metadata.create_all(engine)
 
 ## Recuperation fichier json et ecriture sur le disque
@@ -36,4 +49,4 @@ velovGeoDataFrame.drop('geometry', axis=1, inplace=True)                    ## S
 velovGeoDataFrame=velovGeoDataFrame.applymap(replaceMissingDataByNegate1)   ## Remplacement des valeurs vides par -1 necessaire a la methode to_sql surchargee
 
 ##Insertion en base
-velovGeoDataFrame.to_sql(name='velovmaxence',con=engine,if_exists='append',dtype=velovTableColumnTypes)
+velovGeoDataFrame.to_sql(name=sgbdEPTable,con=engine,if_exists='append',dtype=velovTableColumnTypes)
