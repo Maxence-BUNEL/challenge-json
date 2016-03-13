@@ -62,13 +62,17 @@
 		# Récupération des paramètres
 		# Vérification de l'existence de la table
 		# Connexion au Drive
-		# Tant qu'il y a des json (seulement ceux du mois de février pour test):
+		# Tant qu'il y a des json :
 			# Chargement d'un fichier
 			# Intégration (après manipulations, tests)
 
-# Exemple exécution :
+# Exemple exécution : (seulement json du mois de février pour test)
 	# >C:\Python34\python createCredential.py
 	# 
 	# >C:\Python34\python challenge_NSP_script2.py "localhost:5432" "velov" "velov" "admin" "admin"
-	# ...
-	# ...
+	# >...
+	# >nb tot: 4622
+ 	# >Fin du script en --- 1:46:16.271047  ---
+
+######### SCRIPT 3 ###########
+# challenge_NSP_script3
